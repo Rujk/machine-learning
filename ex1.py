@@ -9,7 +9,33 @@ Data is contained in a csv file.
 """
 
 import numpy as np
-from common_utilities import *
+
+############ Function Definitions ############################
+def sigmoid_activation(z):
+    s = 1 / (1 + exp(-z))
+    return(s)
+    
+def compute_cost(X, Y, W):
+    m = Y.size;
+    H = h(W,X)
+    J = (1/(2*m)) *  np.sum((H - Y) **2, axis=0)
+    return J
+
+def h(W, X):
+    return np.dot(X, W.T)
+
+def batchGradientDescent(X, Y , W, alpha, num_iters):
+    m = Y.size
+    J_history = np.zeros(num_iters)
+    # in each iteration, perform a single gradient step on the weights vector
+    for i in range(num_iters):
+        H = h(W,X)
+#        W = W - (alpha/m) * np.sum((H - Y) * X) # update weights - INCORRECT
+#        W = W - (alpha/m) * np.sum((H - Y) * X, axis=0) # update weights
+        W = W - (alpha/m)*np.sum((H-Y)*X,axis=0)
+        J_history[i] = compute_cost(X, Y, W) # Save the cost J in every iteration
+    return W, J_history  
+############ Function Definitions ############################  
 
 # load data
 dataset = np.loadtxt('ex1data1.csv', delimiter=',', skiprows=1)
