@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Simple Linear Regression
-
-This file contains the Python version of code for Prof Andrew Ng's course Machine Learning - Week 1 - ex1 program -
-one variable Linear Regression.
-
-Data is contained in a csv file.
+Simple linear regression with neural network.
+The nueral network has only the input layer and the output layer. There is no hidden layer.
 """
 
 import numpy as np
 
-############ Function Definitions ############################
 def sigmoid_activation(z):
     s = 1 / (1 + exp(-z))
     return(s)
@@ -30,12 +25,9 @@ def batchGradientDescent(X, Y , W, alpha, num_iters):
     # in each iteration, perform a single gradient step on the weights vector
     for i in range(num_iters):
         H = h(W,X)
-#        W = W - (alpha/m) * np.sum((H - Y) * X) # update weights - INCORRECT
-#        W = W - (alpha/m) * np.sum((H - Y) * X, axis=0) # update weights
         W = W - (alpha/m)*np.sum((H-Y)*X,axis=0)
         J_history[i] = compute_cost(X, Y, W) # Save the cost J in every iteration
-    return W, J_history  
-############ Function Definitions ############################  
+    return W, J_history    
 
 # load data
 dataset = np.loadtxt('ex1data1.csv', delimiter=',', skiprows=1)
@@ -43,14 +35,15 @@ dataset = np.loadtxt('ex1data1.csv', delimiter=',', skiprows=1)
 # split dataset into X and Y (input and labels)
 X = dataset[:,0:1]
 Y = dataset[:,1]
-Y = Y.reshape((Y.size,1)) 
+Y = Y.reshape((Y.size,1)) # => it is NECESSARY to reshape Y to have a shape with column 1, otherwise the results will be INCORRECT.
 m = Y.size
 
-# add a column of ones to X as the intercept column (first column)
+# to take into account the intercept term (w0), add a column of ones to X as the intercept column (first column). This allows w0 to be treated simply as another feature.
 ones = np.ones((X.shape[0],1))
+#X = np.hstack((ones,X)) # either this method or the below method to insert a column of ones can work
 X = np.insert(X,0,1, axis=1) 
 
-# initialize weights, number of iterations and the learning rate
+# initialize weights (to 0), number of iterations and the learning rate
 W = np.zeros((1,2))
 iterations=1500
 alpha=0.01
@@ -59,7 +52,7 @@ alpha=0.01
 cost = compute_cost(X, Y, W)
 print("cost at iteration 0=", cost)
 
-# now train the neural network by using gradient descent
+# now train the network by using gradient descent
 W, J_history = batchGradientDescent(X, Y, W, alpha, iterations)
 
 # print final values of cost and the weights
@@ -72,4 +65,4 @@ prediction_1 = h(W,[1,3.5]) * 10000
 print("prediction_1=", prediction_1)
 # prediction for area with 70,000 population
 prediction_2 = h(W,[1,7]) * 10000
-print("prediction_2=", prediction_2)
+print("prediction_2=", prediction_2)  
