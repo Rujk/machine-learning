@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Simple linear regression with neural network.
-The nueral network has only the input layer and the output layer. There is no hidden layer.
-"""
-
 import numpy as np
 
 def sigmoid_activation(z):
@@ -21,7 +15,7 @@ def compute_cost(X, Y, W):
 def h(X, W):
     return np.dot(X, W)
 
-def batchGradientDescent(X, Y , W, alpha, num_iters):
+def batch_gradient_descent(X, Y , W, alpha, num_iters):
     m = len(Y)
     J_history = np.zeros((num_iters,1))
     # in each iteration, perform a single gradient step on the weights vector
@@ -58,7 +52,7 @@ cost = compute_cost(X, Y, W)
 print("cost at iteration 0=", cost)
 
 # now train the network by using gradient descent
-W, J_history = batchGradientDescent(X, Y, W, alpha, iterations)
+W, J_history = batch_gradient_descent(X, Y, W, alpha, iterations)
 
 # print final values of cost and the weights
 print("final cost=", J_history[-1]) 
