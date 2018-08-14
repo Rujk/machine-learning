@@ -12,21 +12,26 @@ def sigmoid_activation(z):
     
 def compute_cost(X, Y, W):
     m = Y.size;
-    H = h(W,X)
-    J = (1/(2*m)) *  np.sum((H - Y) **2, axis=0)
+    H = h(X,W)
+    error = H-Y
+    J = (1/(2*m)) *  np.sum(error **2, axis=0)
+    
     return J
 
-def h(W, X):
-    return np.dot(X, W.T)
+def h(X, W):
+    return np.dot(X, W)
 
 def batchGradientDescent(X, Y , W, alpha, num_iters):
-    m = Y.size
-    J_history = np.zeros(num_iters)
+    m = len(Y)
+    J_history = np.zeros((num_iters,1))
     # in each iteration, perform a single gradient step on the weights vector
-    for i in range(num_iters):
-        H = h(W,X)
-        W = W - (alpha/m)*np.sum((H-Y)*X,axis=0)
-        J_history[i] = compute_cost(X, Y, W) # Save the cost J in every iteration
+    for i in range(num_iters):        
+        H = h(X,W)
+#        W = W - (alpha/m) * np.sum((H - Y) * X) # update weights - INCORRECT
+        error = H - Y 
+        W = W - (alpha/m) * np.dot(X.T,error) # update weights
+        J_history[i] = compute_cost(X, Y, W)
+#        print("cost=", J_history[i], "W=", W)
     return W, J_history    
 
 # load data
@@ -44,7 +49,7 @@ ones = np.ones((X.shape[0],1))
 X = np.insert(X,0,1, axis=1) 
 
 # initialize weights (to 0), number of iterations and the learning rate
-W = np.zeros((1,2))
+W = np.zeros((X.shape[1],1))
 iterations=1500
 alpha=0.01
 
@@ -61,8 +66,8 @@ print("final weights=", W)
 
 # now make predictions with the weights determined by gradient descent
 # prediction for area with 35,000 population
-prediction_1 = h(W,[1,3.5]) * 10000
+prediction_1 = h([1,3.5],W) * 10000
 print("prediction_1=", prediction_1)
 # prediction for area with 70,000 population
-prediction_2 = h(W,[1,7]) * 10000
-print("prediction_2=", prediction_2)  
+prediction_2 = h([1,7],W) * 10000
+print("prediction_2=", prediction_2)
